@@ -1,0 +1,33 @@
+version: '2.4'
+
+#Define variáveis de ambiente
+x-database-variables: &database-variables
+  SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/anime?createDatabaseIfNotExist=true
+  SPRING_DATASOURCE_USERNAME: root
+  SPRING_DATASOURCE_PASSWORD: root
+
+services:
+
+  db:
+    image: "mysql"
+    container_name: "mysql"
+    environment:
+      #variaveis de ambiente
+      MYSQL_ROOT_PASSWORD: "root"
+    ports:
+      - "3306:3306" #mapeia a porta  3306 do container para o SO
+    volumes:
+      - devdojo_data:/var/lib/mysql
+    mem_limit: 512m # limita o uso de memoria
+
+  springboot-essentials:
+    image: "halkham/spring-essentials:0.0.1-SNAPSHOT"
+    ports:
+      - "8080:8080"
+    environment:
+      # Carrega as variáveis de ambientes para esse container
+      <<: *database-variables
+    mem_limit: 512m
+
+volumes:
+  devdojo_data:
